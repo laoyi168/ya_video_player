@@ -15,12 +15,7 @@ dependencies:
   video_player: ^2.4.8
   js: ^0.6.4
   video_player_platform_interface: ^5.1.1
-  fijkplayer: ^0.10.0
 
-  yoyo_player:
-    git:
-      url: https://github.com/ko-htut/yoyo-player
-      ref: 70eb77fb9f7402a81cfa86e0598ba79bdd755cad
 
 dev_dependencies:
   flutter_test:

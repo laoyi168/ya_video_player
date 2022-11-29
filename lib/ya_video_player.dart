@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:video_player/video_player.dart';
-import 'package:fijkplayer/fijkplayer.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart'
     show DataSource, VideoEvent, VideoEventType;
 import 'package:ya_video_player/ya_video_player_interface.dart';
-import 'package:yoyo_player/yoyo_player.dart';
+
 
 class YaVideoPlayer extends StatefulWidget {
   static const MethodChannel _channel = const MethodChannel('ya_video_player');
@@ -197,8 +197,7 @@ class YaVideoPlayerController {
   YaVideoPlayerInterface? _interface = YaVideoPlayerInterface.instance;
   VideoPlayerController? _extPlayer;
   VideoPlayerController? _flvPlayer;
-  FijkPlayer? _fijkPlayer;
-  YoYoPlayer? _yoYoPlayer;
+
 
   late Future<void> _initializeVideoPlayerFuture;
   late Completer<void> _creatingCompleter;
@@ -223,8 +222,7 @@ class YaVideoPlayerController {
     switch (this.player) {
       case Player.ijk:
         {
-          _fijkPlayer = FijkPlayer();
-          _fijkPlayer!.setDataSource(dataSource, autoPlay: true);
+
           break;
         }
       case Player.ext:
@@ -249,22 +247,12 @@ class YaVideoPlayerController {
     switch (this.player) {
       case Player.ijk:
         {
-          _fijkPlayer = FijkPlayer();
-          _fijkPlayer!.setDataSource(dataSource, autoPlay: true);
+
           break;
         }
       case Player.yoyo:
         {
-          _yoYoPlayer = YoYoPlayer(
-            aspectRatio: 1,
-            url: dataSource,
-            videoStyle: VideoStyle(),
-            videoLoadingStyle: VideoLoadingStyle(
-              loading: Center(
-                child: Text("LOADING..."),
-              ),
-            ),
-          );
+
           break;
         }
       case Player.ext:
@@ -284,11 +272,6 @@ class YaVideoPlayerController {
     this.player = player;
     switch (this.player) {
       case Player.ijk:
-        {
-          _fijkPlayer = FijkPlayer();
-          _fijkPlayer!.setDataSource(file.path, autoPlay: true);
-          break;
-        }
       case Player.ext:
       case Player.flv:
       default:
@@ -301,10 +284,7 @@ class YaVideoPlayerController {
   YaVideoPlayerValue value({Size defaultSize = const Size.square(450)}) {
     switch (this.player) {
       case Player.ijk:
-        {
-          return copyVideoPlayerValue(_fijkPlayer!.value,
-              defaultSize: defaultSize);
-        }
+
       case Player.ext:
         {
           return copyVideoPlayerValue(_extPlayer!.value,
@@ -326,13 +306,7 @@ class YaVideoPlayerController {
           duration: value.duration ?? Duration(),
           size: value.size ?? defaultSize,
           errorDescription: value.errorDescription);
-    } else if (value is FijkValue) {
-      return YaVideoPlayerValue(
-        duration: value.duration,
-        size: value.size ?? defaultSize,
-        errorDescription: value.exception.message,
-      );
-    } else {
+    }else {
       return YaVideoPlayerValue.uninitialized();
     }
   }
@@ -351,7 +325,7 @@ class YaVideoPlayerController {
         }
       case Player.ijk:
         {
-          _fijkPlayer!.addListener(listener);
+
           break;
         }
     }
@@ -366,14 +340,13 @@ class YaVideoPlayerController {
               .invokeMapMethod('setPlaybackSpeed', [_textureId, speed]);
           break;
         }
+      case Player.ijk:
       case Player.ext:
         {
           return await _extPlayer!.setPlaybackSpeed(speed);
         }
-      case Player.ijk:
-        {
-          return await _fijkPlayer!.setSpeed(speed);
-        }
+
+
     }
   }
 
@@ -386,14 +359,12 @@ class YaVideoPlayerController {
               .invokeMapMethod('setVolume', [_textureId, volume]);
           break;
         }
+      case Player.ijk:
       case Player.ext:
         {
           return await _extPlayer!.setVolume(volume);
         }
-      case Player.ijk:
-        {
-          return await _fijkPlayer!.setVolume(volume);
-        }
+
     }
   }
 
@@ -406,14 +377,12 @@ class YaVideoPlayerController {
               .invokeMapMethod('seekTo', [_textureId, position]);
           break;
         }
+      case Player.ijk:
       case Player.ext:
         {
           return await _extPlayer!.seekTo(position!);
         }
-      case Player.ijk:
-        {
-          return await _fijkPlayer!.seekTo(position?.inMicroseconds ?? 0);
-        }
+
     }
   }
 
@@ -425,14 +394,12 @@ class YaVideoPlayerController {
           return await YaVideoPlayer._channel
               .invokeMethod('getPosition', _textureId);
         }
+      case Player.ijk:
       case Player.ext:
         {
           return await _extPlayer!.position;
         }
-      case Player.ijk:
-        {
-          return await _fijkPlayer!.currentPos;
-        }
+
     }
   }
 
@@ -443,14 +410,12 @@ class YaVideoPlayerController {
         {
           return await YaVideoPlayer._channel.invokeMethod('pause', _textureId);
         }
+      case Player.ijk:
       case Player.ext:
         {
           return await _extPlayer!.pause();
         }
-      case Player.ijk:
-        {
-          return await _fijkPlayer!.pause();
-        }
+
     }
   }
 
@@ -463,14 +428,12 @@ class YaVideoPlayerController {
               .invokeMapMethod('setLooping', [_textureId, looping]);
           break;
         }
+      case Player.ijk:
       case Player.ext:
         {
           return await _extPlayer!.setLooping(looping);
         }
-      case Player.ijk:
-        {
-          return await _fijkPlayer!.setLoop(100);
-        }
+
     }
   }
 
@@ -481,14 +444,12 @@ class YaVideoPlayerController {
         {
           return await YaVideoPlayer._channel.invokeMethod('play', _textureId);
         }
+      case Player.ijk:
       case Player.ext:
         {
           return await _extPlayer!.play();
         }
-      case Player.ijk:
-        {
-          return await _fijkPlayer!.start();
-        }
+
     }
   }
 
@@ -501,14 +462,12 @@ class YaVideoPlayerController {
               .invokeMethod('dispose', _textureId);
           break;
         }
+      case Player.ijk:
       case Player.ext:
         {
           return await _extPlayer!.dispose();
         }
-      case Player.ijk:
-        {
-          return _fijkPlayer!.dispose();
-        }
+
     }
   }
 
@@ -637,15 +596,9 @@ class YaVideoPlayerController {
     }
     switch (player) {
       case Player.yoyo:
-        {
-          return _yoYoPlayer!;
-        }
+
       case Player.ijk:
-        {
-          return FijkView(
-            player: _fijkPlayer!,
-          );
-        }
+
 
       case Player.ext:
         {
